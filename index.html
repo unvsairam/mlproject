@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Time Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --input-bg: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 28px;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 0;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            padding-left: 4px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            width: 100%;
+            max-width: 300px;
+            padding: 14px;
+            margin-top: 10px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #result {
+            margin-top: 24px;
+            font-size: 20px;
+            font-weight: 600;
+            min-height: 30px;
+            transition: opacity 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Delivery Predictor Studio</h2>
+        <p class="subtitle">Complete 18-Feature Machine Learning Inference (Blanks default to placeholders)</p>
+
+        <div class="features-grid">
+            <div class="input-group">
+                <label>1. Delivery ID</label>
+                <input type="number" id="f0" placeholder="5650">
+            </div>
+            <div class="input-group">
+                <label>2. Origin</label>
+                <input type="text" id="f1" placeholder="Warehouse B">
+            </div>
+            <div class="input-group">
+                <label>3. Destination</label>
+                <input type="text" id="f2" placeholder="Customer 4">
+            </div>
+            <div class="input-group">
+                <label>4. Distance (km)</label>
+                <input type="number" id="f3" placeholder="38">
+            </div>
+            <div class="input-group">
+                <label>5. Delivery Window</label>
+                <input type="text" id="f4" placeholder="16:00 - 20:00">
+            </div>
+            <div class="input-group">
+                <label>6. Urgency</label>
+                <input type="number" id="f5" placeholder="1">
+            </div>
+            <div class="input-group">
+                <label>7. Delivery Status</label>
+                <input type="text" id="f6" placeholder="On-time">
+            </div>
+            <div class="input-group">
+                <label>8. Traffic Level (0-10)</label>
+                <input type="number" id="f7" placeholder="7">
+            </div>
+            <div class="input-group">
+                <label>9. Route Type</label>
+                <input type="text" id="f8" placeholder="Urban">
+            </div>
+            <div class="input-group">
+                <label>10. Traffic Delay (mins)</label>
+                <input type="number" id="f9" placeholder="35">
+            </div>
+            <div class="input-group">
+                <label>11. Weather</label>
+                <input type="text" id="f10" placeholder="Clear">
+            </div>
+            <div class="input-group">
+                <label>12. Weather Impact</label>
+                <input type="number" id="f11" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>13. Vehicle Type</label>
+                <input type="text" id="f12" placeholder="Truck">
+            </div>
+            <div class="input-group">
+                <label>14. Fuel Efficiency</label>
+                <input type="number" id="f13" step="0.01" placeholder="0.1">
+            </div>
+            <div class="input-group">
+                <label>15. Fuel Consumption</label>
+                <input type="number" id="f14" step="0.01" placeholder="3.8">
+            </div>
+            <div class="input-group">
+                <label>16. Region</label>
+                <input type="text" id="f15" placeholder="West">
+            </div>
+            <div class="input-group">
+                <label>17. Time of Day</label>
+                <input type="text" id="f16" placeholder="Morning">
+            </div>
+            <div class="input-group">
+                <label>18. Day of Week</label>
+                <input type="text" id="f17" placeholder="Sunday">
+            </div>
+        </div>
+
+        <button onclick="predict()" id="predictBtn">Predict Delivery Time</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function predict() {
+            const btn = document.getElementById("predictBtn");
+            const resultDiv = document.getElementById("result");
+            
+            btn.innerText = "Analyzing variables...";
+            btn.style.opacity = "0.8";
+            resultDiv.style.opacity = "0";
+
+            let features = [];
+            for(let i = 0; i < 18; i++) {
+                let el = document.getElementById("f" + i);
+                let val = el.value;
+                if (!val) val = el.placeholder; // use default if empty to prevent model crash
+                
+                if(el.type === "number") {
+                    features.push(parseFloat(val));
+                } else {
+                    features.push(val);
+                }
+            }
+
+            fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ features: features })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    btn.innerText = "Predict Delivery Time";
+                    btn.style.opacity = "1";
+                    resultDiv.style.opacity = "1";
+
+                    if(data.error) {
+                        resultDiv.style.color = "#ef4444";
+                        resultDiv.innerText = "Error: " + data.error;
+                    } else {
+                        resultDiv.style.color = "#10b981";
+                        resultDiv.innerText = "⏱️ Est. Time: " + data.predicted_delivery_time + " hrs";
+                    }
+                })
+                .catch(error => {
+                    btn.innerText = "Predict Delivery Time";
+                    btn.style.opacity = "1";
+                    resultDiv.style.opacity = "1";
+                    resultDiv.style.color = "#ef4444";
+                    resultDiv.innerText = "Error connecting to server";
+                });
+        }
+    </script>
+</body>
+</html>
