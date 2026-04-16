@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
+
 warnings.filterwarnings("ignore")
 
 from sklearn.model_selection import train_test_split
@@ -22,18 +23,19 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import pickle
 
- 
+
 # Step 2: Load Dataset
-df = pd.read_csv("dataset.csv")   # update file name if needed
+df = pd.read_csv("dataset.csv")  # update file name if needed
 df.head()
 
 # Step 3: Preprocessing
-df.drop(columns=["ID"], errors='ignore', inplace=True)
+# Drop identifier columns so model trains only on predictive features.
+df.drop(columns=["ID", "Delivery ID"], errors="ignore", inplace=True)
 df = df.dropna()
 
 encoders = {}
 X = df.drop("Time Taken (hrs)", axis=1).copy()
-for col in X.select_dtypes(exclude=['number']).columns:
+for col in X.select_dtypes(exclude=["number"]).columns:
     le = LabelEncoder()
     X[col] = le.fit_transform(X[col])
     encoders[col] = le
@@ -61,6 +63,7 @@ rf_pred = rf_model.predict(X_test)
 
 # Step 9: Evaluation
 
+
 def evaluate_model(y_true, y_pred, model_name):
     mae = mean_absolute_error(y_true, y_pred)
     rmse = np.sqrt(mean_squared_error(y_true, y_pred))
@@ -74,7 +77,7 @@ def evaluate_model(y_true, y_pred, model_name):
 
 evaluate_model(y_test, dt_pred, "Decision Tree")
 evaluate_model(y_test, rf_pred, "Random Forest")
- 
+
 # Save model and encoders
 with open("model.pkl", "wb") as f:
     pickle.dump(rf_model, f)
@@ -85,18 +88,15 @@ models = ["Decision Tree", "Random Forest"]
 
 mae_scores = [
     mean_absolute_error(y_test, dt_pred),
-    mean_absolute_error(y_test, rf_pred)
+    mean_absolute_error(y_test, rf_pred),
 ]
 
 rmse_scores = [
     np.sqrt(mean_squared_error(y_test, dt_pred)),
-    np.sqrt(mean_squared_error(y_test, rf_pred))
+    np.sqrt(mean_squared_error(y_test, rf_pred)),
 ]
 
-r2_scores = [
-    r2_score(y_test, dt_pred),
-    r2_score(y_test, rf_pred)
-]
+r2_scores = [r2_score(y_test, dt_pred), r2_score(y_test, rf_pred)]
 
 # 📊 Plot MAE
 plt.figure()
@@ -123,4 +123,3 @@ plt.title("R2 Score Comparison")
 plt.xlabel("Models")
 plt.ylabel("R2 Score")
 plt.show()
-

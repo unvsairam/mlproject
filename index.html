@@ -3,289 +3,788 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delivery Time Predictor</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Delivery Outcome Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Newsreader:opsz,wght@6..72,500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --input-bg: rgba(0, 0, 0, 0.2);
+            --bg-1: #f7f4ef;
+            --bg-2: #e8ecf5;
+            --card: #ffffffcc;
+            --line: #d2d8e6;
+            --text: #112033;
+            --muted: #5e6a7f;
+            --accent: #0b6a87;
+            --accent-2: #15907f;
+            --danger: #b42318;
+            --ok: #087443;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            background: var(--bg-gradient);
-            color: var(--text-main);
+            padding: 32px 16px;
+            font-family: 'Manrope', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 700px at 10% 10%, #cbe6ea80, transparent 60%),
+                radial-gradient(900px 600px at 90% 90%, #d9d8f680, transparent 60%),
+                linear-gradient(160deg, var(--bg-1), var(--bg-2));
         }
 
         .container {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
+            width: min(1160px, 100%);
+            margin: 0 auto;
+            background: var(--card);
+            border: 1px solid #ffffff;
             border-radius: 24px;
-            padding: 40px;
-            width: 100%;
-            max-width: 800px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
-            box-sizing: border-box;
+            box-shadow: 0 18px 50px rgba(21, 41, 76, 0.12);
+            backdrop-filter: blur(8px);
+            padding: 28px;
+            animation: rise 500ms ease-out;
         }
 
-        h2 {
-            margin-top: 0;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 28px;
-            letter-spacing: -0.5px;
+        .hero h1 {
+            margin: 0;
+            font-family: 'Newsreader', serif;
+            font-size: clamp(2rem, 3.2vw, 2.6rem);
+            font-weight: 500;
+            letter-spacing: -0.02em;
         }
 
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 30px;
+        .subtitle {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 0.95rem;
         }
-        
+
+        .tabs {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            border: 1px solid #d5dced;
+            background: #f0f4fb;
+            color: var(--text);
+            border-radius: 999px;
+            padding: 9px 14px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(145deg, var(--accent), var(--accent-2));
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .tab-pane {
+            margin-top: 18px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: #ffffffbf;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .panel h2 {
+            margin: 0 0 10px;
+            font-size: 1rem;
+        }
+
+        .presets {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .preset-btn {
+            text-align: left;
+            background: #eff4fb;
+            color: var(--text);
+            border: 1px solid #d8e1f0;
+            border-radius: 12px;
+            padding: 10px 12px;
+            font: inherit;
+            font-size: 0.86rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .preset-btn small {
+            display: block;
+            margin-top: 2px;
+            font-weight: 500;
+            color: var(--muted);
+        }
+
+        .preset-btn.active {
+            border-color: var(--accent);
+            background: linear-gradient(160deg, #e7f5fa, #eef3ff);
+            box-shadow: 0 0 0 3px #0b6a871a;
+        }
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 10px;
         }
 
         .input-group {
-            margin-bottom: 0;
-            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .input-group label {
-            display: block;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            padding-left: 4px;
+            font-size: 0.78rem;
+            color: var(--muted);
         }
 
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-main);
-            font-size: 14px;
-            font-family: inherit;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-        
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
+        input,
+        select {
+            border: 1px solid #ccd5e5;
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--text);
+            background: #fdfefe;
+            font: inherit;
+            font-size: 0.9rem;
         }
 
-        input:focus {
-            outline: none;
+        input:focus,
+        select:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 0 3px #0b6a871a;
+            outline: none;
         }
 
-        button {
-            width: 100%;
-            max-width: 300px;
-            padding: 14px;
-            margin-top: 10px;
-            background: var(--accent);
-            color: white;
-            border: none;
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            border: 1px solid transparent;
             border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            font-family: inherit;
+            padding: 10px 12px;
+            font: inherit;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        button:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        .btn-primary {
+            background: linear-gradient(145deg, var(--accent), var(--accent-2));
+            color: #fff;
         }
 
-        button:active {
-            transform: translateY(0);
+        .btn-secondary {
+            background: #f3f5f9;
+            color: var(--text);
+            border-color: #d7ddeb;
         }
 
-        #result {
-            margin-top: 24px;
-            font-size: 20px;
+        .result-card {
+            margin-top: 10px;
+            border-radius: 14px;
+            padding: 14px;
+            background: linear-gradient(160deg, #f5faf7, #f1f8ff);
+            border: 1px solid #d8e9df;
+            min-height: 145px;
+        }
+
+        .result-time {
+            margin: 8px 0 4px;
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            font-weight: 800;
+            color: var(--ok);
+        }
+
+        .result-meta {
+            margin: 2px 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .meter {
+            margin-top: 12px;
+            height: 10px;
+            border-radius: 999px;
+            background: #e6edf7;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #15907f, #0b6a87);
+            transition: width 300ms ease;
+        }
+
+        .status-error {
+            color: var(--danger);
+            margin-top: 8px;
             font-weight: 600;
-            min-height: 30px;
-            transition: opacity 0.3s ease;
+            min-height: 20px;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+        .optimizer-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 16px;
+        }
+
+        .map-wrap {
+            margin-top: 8px;
+            width: 100%;
+            background: linear-gradient(180deg, #f4f8ff, #eef6f4);
+            border: 1px solid #d3dfec;
+            border-radius: 14px;
+            padding: 8px;
+        }
+
+        #routeMap {
+            width: 100%;
+            height: 360px;
+            display: block;
+            border-radius: 10px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .metrics {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .metric-card {
+            border: 1px solid #d6deea;
+            border-radius: 12px;
+            padding: 10px;
+            background: #ffffffd1;
+        }
+
+        .metric-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .metric-value {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        .route-table {
+            margin-top: 12px;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+        }
+
+        .route-table th,
+        .route-table td {
+            border-bottom: 1px solid #e2e8f2;
+            padding: 6px 4px;
+            text-align: left;
+        }
+
+        .route-table th {
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 980px) {
+            .layout,
+            .optimizer-layout {
+                grid-template-columns: 1fr;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+
+            .presets,
+            .features-grid,
+            .metrics {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h2>Delivery Predictor Studio</h2>
-        <p class="subtitle">Complete 18-Feature Machine Learning Inference (Blanks default to placeholders)</p>
-
-        <div class="features-grid">
-            <div class="input-group">
-                <label>1. Delivery ID</label>
-                <input type="number" id="f0" placeholder="5650">
-            </div>
-            <div class="input-group">
-                <label>2. Origin</label>
-                <input type="text" id="f1" placeholder="Warehouse B">
-            </div>
-            <div class="input-group">
-                <label>3. Destination</label>
-                <input type="text" id="f2" placeholder="Customer 4">
-            </div>
-            <div class="input-group">
-                <label>4. Distance (km)</label>
-                <input type="number" id="f3" placeholder="38">
-            </div>
-            <div class="input-group">
-                <label>5. Delivery Window</label>
-                <input type="text" id="f4" placeholder="16:00 - 20:00">
-            </div>
-            <div class="input-group">
-                <label>6. Urgency</label>
-                <input type="number" id="f5" placeholder="1">
-            </div>
-            <div class="input-group">
-                <label>7. Delivery Status</label>
-                <input type="text" id="f6" placeholder="On-time">
-            </div>
-            <div class="input-group">
-                <label>8. Traffic Level (0-10)</label>
-                <input type="number" id="f7" placeholder="7">
-            </div>
-            <div class="input-group">
-                <label>9. Route Type</label>
-                <input type="text" id="f8" placeholder="Urban">
-            </div>
-            <div class="input-group">
-                <label>10. Traffic Delay (mins)</label>
-                <input type="number" id="f9" placeholder="35">
-            </div>
-            <div class="input-group">
-                <label>11. Weather</label>
-                <input type="text" id="f10" placeholder="Clear">
-            </div>
-            <div class="input-group">
-                <label>12. Weather Impact</label>
-                <input type="number" id="f11" placeholder="0">
-            </div>
-            <div class="input-group">
-                <label>13. Vehicle Type</label>
-                <input type="text" id="f12" placeholder="Truck">
-            </div>
-            <div class="input-group">
-                <label>14. Fuel Efficiency</label>
-                <input type="number" id="f13" step="0.01" placeholder="0.1">
-            </div>
-            <div class="input-group">
-                <label>15. Fuel Consumption</label>
-                <input type="number" id="f14" step="0.01" placeholder="3.8">
-            </div>
-            <div class="input-group">
-                <label>16. Region</label>
-                <input type="text" id="f15" placeholder="West">
-            </div>
-            <div class="input-group">
-                <label>17. Time of Day</label>
-                <input type="text" id="f16" placeholder="Morning">
-            </div>
-            <div class="input-group">
-                <label>18. Day of Week</label>
-                <input type="text" id="f17" placeholder="Sunday">
-            </div>
+        <div class="hero">
+            <h1>Delivery Outcome Studio</h1>
+            <p class="subtitle">Prediction studio and route optimization in one page.</p>
         </div>
 
-        <button onclick="predict()" id="predictBtn">Predict Delivery Time</button>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" data-tab="predictor">Prediction Studio</button>
+            <button type="button" class="tab-btn" data-tab="optimizer">Route Optimizer</button>
+        </div>
 
-        <div id="result"></div>
+        <div id="predictorTab" class="tab-pane">
+            <div class="layout">
+                <section class="panel">
+                    <h2>Scenario Presets</h2>
+                    <div class="presets" id="presetGrid"></div>
+                    <div class="actions">
+                        <button class="btn btn-secondary" id="clearBtn" type="button">Clear for Manual Input</button>
+                    </div>
+                </section>
+
+                <section class="panel">
+                    <h2>Prediction Outcome</h2>
+                    <div class="result-card">
+                        <p class="result-meta">Estimated Time</p>
+                        <p class="result-time" id="resultTime">-- hrs</p>
+                        <p class="result-meta" id="resultBand">Waiting for prediction</p>
+                        <p class="result-meta" id="resultEta">Select a preset to see outcome</p>
+                        <div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+                    </div>
+                    <p class="status-error" id="errorMsg"></p>
+                    <div class="actions">
+                        <button class="btn btn-primary" id="predictBtn" type="button">Predict from Current Fields</button>
+                    </div>
+                </section>
+            </div>
+
+            <section class="panel" style="margin-top: 20px;">
+                <h2>Custom Parameters</h2>
+                <div class="features-grid">
+                    <div class="input-group"><label>1. Origin</label><input type="text" id="f0" placeholder="Warehouse B"></div>
+                    <div class="input-group"><label>2. Destination</label><input type="text" id="f1" placeholder="Customer 4"></div>
+                    <div class="input-group"><label>3. Distance (km)</label><input type="number" id="f2" placeholder="38"></div>
+                    <div class="input-group"><label>4. Delivery Window</label><input type="text" id="f3" placeholder="16:00 - 20:00"></div>
+                    <div class="input-group"><label>5. Urgency</label><input type="number" id="f4" placeholder="1"></div>
+                    <div class="input-group"><label>6. Delivery Status</label><input type="text" id="f5" placeholder="On-time"></div>
+                    <div class="input-group"><label>7. Traffic Level (0-10)</label><input type="number" id="f6" placeholder="7"></div>
+                    <div class="input-group"><label>8. Route Type</label><input type="text" id="f7" placeholder="Urban"></div>
+                    <div class="input-group"><label>9. Traffic Delay (mins)</label><input type="number" id="f8" placeholder="35"></div>
+                    <div class="input-group"><label>10. Weather</label><input type="text" id="f9" placeholder="Clear"></div>
+                    <div class="input-group"><label>11. Weather Impact</label><input type="number" id="f10" placeholder="0"></div>
+                    <div class="input-group"><label>12. Vehicle Type</label><input type="text" id="f11" placeholder="Truck"></div>
+                    <div class="input-group"><label>13. Fuel Efficiency</label><input type="number" id="f12" step="0.01" placeholder="0.1"></div>
+                    <div class="input-group"><label>14. Fuel Consumption</label><input type="number" id="f13" step="0.01" placeholder="3.8"></div>
+                    <div class="input-group"><label>15. Region</label><input type="text" id="f14" placeholder="West"></div>
+                    <div class="input-group"><label>16. Delivery Time of Day</label><input type="text" id="f15" placeholder="Morning"></div>
+                    <div class="input-group"><label>17. Day of Week</label><input type="text" id="f16" placeholder="Sunday"></div>
+                </div>
+            </section>
+        </div>
+
+        <div id="optimizerTab" class="tab-pane hidden">
+            <div class="optimizer-layout">
+                <section class="panel">
+                    <h2>Optimizer Controls</h2>
+                    <div class="input-group">
+                        <label>Warehouse</label>
+                        <select id="optWarehouse"></select>
+                    </div>
+                    <div class="input-group" style="margin-top: 8px;">
+                        <label>Delivery Window</label>
+                        <select id="optWindow"></select>
+                    </div>
+                    <div class="input-group" style="margin-top: 8px;">
+                        <label>Day</label>
+                        <select id="optDay"></select>
+                    </div>
+                    <div class="input-group" style="margin-top: 8px;">
+                        <label>Weather</label>
+                        <select id="optWeather"></select>
+                    </div>
+                    <div class="input-group" style="margin-top: 8px;">
+                        <label>Fuel Cost (INR/liter): <span id="fuelCostLabel">120</span></label>
+                        <input id="optFuelCost" type="range" min="80" max="200" step="1" value="120">
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-primary" id="optimizeBtn" type="button">Optimize Route</button>
+                    </div>
+                    <p class="status-error" id="optError"></p>
+                </section>
+
+                <section class="panel">
+                    <h2>Route Map</h2>
+                    <div class="map-wrap">
+                        <svg id="routeMap" viewBox="0 0 760 360"></svg>
+                    </div>
+                    <div class="legend">
+                        <span><span class="dot" style="background:#9a3412"></span>Warehouse</span>
+                        <span><span class="dot" style="background:#64748b"></span>Current route</span>
+                        <span><span class="dot" style="background:#0b6a87"></span>Optimized route</span>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric-card">
+                            <div class="metric-label">Distance saved</div>
+                            <div class="metric-value" id="mDistance">-- km</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Time saved</div>
+                            <div class="metric-value" id="mTime">-- hrs</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Fuel saved</div>
+                            <div class="metric-value" id="mFuel">INR --</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <section class="panel" style="margin-top: 14px;">
+                <h2>Current Route</h2>
+                <table class="route-table" id="currentTable"></table>
+            </section>
+
+            <section class="panel" style="margin-top: 14px;">
+                <h2>Optimized Route</h2>
+                <table class="route-table" id="optimizedTable"></table>
+            </section>
+        </div>
     </div>
 
     <script>
-        function predict() {
-            const btn = document.getElementById("predictBtn");
-            const resultDiv = document.getElementById("result");
-            
-            btn.innerText = "Analyzing variables...";
-            btn.style.opacity = "0.8";
-            resultDiv.style.opacity = "0";
+        const fields = Array.from({ length: 17 }, (_, i) => document.getElementById(`f${i}`));
+        const presetGrid = document.getElementById("presetGrid");
+        const predictBtn = document.getElementById("predictBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const resultTime = document.getElementById("resultTime");
+        const resultBand = document.getElementById("resultBand");
+        const resultEta = document.getElementById("resultEta");
+        const meterFill = document.getElementById("meterFill");
+        const errorMsg = document.getElementById("errorMsg");
 
-            let features = [];
-            for(let i = 0; i < 18; i++) {
-                let el = document.getElementById("f" + i);
-                let val = el.value;
-                if (!val) val = el.placeholder; // use default if empty to prevent model crash
-                
-                if(el.type === "number") {
-                    features.push(parseFloat(val));
-                } else {
-                    features.push(val);
-                }
+        const optWarehouse = document.getElementById("optWarehouse");
+        const optWindow = document.getElementById("optWindow");
+        const optDay = document.getElementById("optDay");
+        const optWeather = document.getElementById("optWeather");
+        const optFuelCost = document.getElementById("optFuelCost");
+        const fuelCostLabel = document.getElementById("fuelCostLabel");
+        const optimizeBtn = document.getElementById("optimizeBtn");
+        const optError = document.getElementById("optError");
+        const routeMap = document.getElementById("routeMap");
+        const currentTable = document.getElementById("currentTable");
+        const optimizedTable = document.getElementById("optimizedTable");
+
+        const presets = [
+            { name: "Fast Urban", description: "Short route, clear weather", features: ["Warehouse A", "Customer 1", 24, "08:00 - 12:00", 2, "On-time", 2, "Urban", 5, "Clear", 0, "Motorcycle", 0.05, 1.2, "East", "Morning", "Tuesday"] },
+            { name: "Suburban Standard", description: "Balanced daytime run", features: ["Warehouse B", "Customer 3", 52, "12:00 - 16:00", 1, "On-time", 4, "Suburban", 10, "Clear", 0, "Van", 0.05, 2.6, "South", "Afternoon", "Wednesday"] },
+            { name: "Rural Long Haul", description: "Long distance route", features: ["Warehouse C", "Customer 6", 136, "16:00 - 20:00", 1, "On-time", 3, "Rural", 7, "Clear", 0, "Truck", 0.1, 13.6, "North", "Evening", "Monday"] },
+            { name: "Storm Delay", description: "Bad weather impact", features: ["Warehouse A", "Customer 4", 84, "12:00 - 16:00", 1, "Delayed", 7, "Urban", 18, "Snow", 28, "Truck", 0.1, 8.4, "West", "Afternoon", "Friday"] },
+            { name: "Rush Hour", description: "Heavy traffic pressure", features: ["Warehouse B", "Customer 2", 45, "16:00 - 20:00", 2, "Delayed", 10, "Urban", 32, "Rain", 21, "Van", 0.05, 2.25, "East", "Evening", "Thursday"] },
+            { name: "Quiet Weekend", description: "Low traffic Sunday", features: ["Warehouse C", "Customer 5", 63, "08:00 - 12:00", 1, "On-time", 1, "Suburban", 2, "Clear", 0, "Van", 0.05, 3.15, "North", "Morning", "Sunday"] },
+            { name: "Express Bike", description: "Urgent and nimble", features: ["Warehouse A", "Customer 2", 19, "12:00 - 16:00", 3, "On-time", 3, "Urban", 6, "Clear", 0, "Motorcycle", 0.05, 0.95, "South", "Afternoon", "Saturday"] },
+            { name: "Foggy Morning", description: "Visibility issues", features: ["Warehouse B", "Customer 6", 78, "08:00 - 12:00", 1, "Delayed", 5, "Rural", 13, "Fog", 19, "Truck", 0.1, 7.8, "West", "Morning", "Thursday"] },
+            { name: "Cross Region", description: "Distance + mixed traffic", features: ["Warehouse C", "Customer 1", 148, "12:00 - 16:00", 1, "On-time", 6, "Suburban", 16, "Clear", 0, "Truck", 0.1, 14.8, "East", "Afternoon", "Monday"] },
+            { name: "Critical Delay", description: "Worst-case pattern", features: ["Warehouse A", "Customer 5", 142, "16:00 - 20:00", 2, "Delayed", 10, "Urban", 35, "Snow", 30, "Truck", 0.1, 14.2, "South", "Evening", "Friday"] },
+            { name: "Rainy Suburban", description: "Moderate route with rain", features: ["Warehouse B", "Customer 4", 67, "12:00 - 16:00", 1, "On-time", 6, "Suburban", 15, "Rain", 18, "Van", 0.05, 3.35, "West", "Afternoon", "Tuesday"] },
+            { name: "North Rural Snow", description: "Cold weather rural trip", features: ["Warehouse C", "Customer 2", 121, "08:00 - 12:00", 1, "Delayed", 7, "Rural", 20, "Snow", 26, "Truck", 0.1, 12.1, "North", "Morning", "Wednesday"] },
+            { name: "Late Van Express", description: "Evening suburban urgency", features: ["Warehouse A", "Customer 3", 58, "16:00 - 20:00", 3, "On-time", 5, "Suburban", 12, "Clear", 0, "Van", 0.05, 2.9, "East", "Evening", "Saturday"] },
+            { name: "Foggy Metro", description: "Urban fog with congestion", features: ["Warehouse B", "Customer 1", 41, "08:00 - 12:00", 2, "Delayed", 9, "Urban", 27, "Fog", 22, "Motorcycle", 0.05, 2.05, "South", "Morning", "Monday"] },
+            { name: "Balanced Midweek", description: "Steady normal conditions", features: ["Warehouse C", "Customer 6", 74, "12:00 - 16:00", 1, "On-time", 4, "Suburban", 9, "Clear", 0, "Truck", 0.1, 7.4, "East", "Afternoon", "Thursday"] }
+        ];
+
+        function switchTab(tabName) {
+            document.querySelectorAll(".tab-btn").forEach((btn) => {
+                btn.classList.toggle("active", btn.dataset.tab === tabName);
+            });
+            document.getElementById("predictorTab").classList.toggle("hidden", tabName !== "predictor");
+            document.getElementById("optimizerTab").classList.toggle("hidden", tabName !== "optimizer");
+        }
+
+        document.querySelectorAll(".tab-btn").forEach((btn) => {
+            btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+        });
+
+        function setActivePreset(index) {
+            const allButtons = Array.from(document.querySelectorAll(".preset-btn"));
+            allButtons.forEach((button, i) => button.classList.toggle("active", i === index));
+        }
+
+        function applyPreset(index) {
+            const preset = presets[index];
+            preset.features.forEach((value, i) => {
+                fields[i].value = value;
+            });
+            setActivePreset(index);
+            predict();
+        }
+
+        function buildPresets() {
+            presets.forEach((preset, index) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "preset-btn";
+                button.innerHTML = `${preset.name}<small>${preset.description}</small>`;
+                button.addEventListener("click", () => applyPreset(index));
+                presetGrid.appendChild(button);
+            });
+        }
+
+        function collectFeatures() {
+            return fields.map((field) => {
+                const value = field.value || field.placeholder;
+                return field.type === "number" ? parseFloat(value) : String(value);
+            });
+        }
+
+        function getSpeedBand(hours) {
+            if (hours <= 1.0) return "Very Fast";
+            if (hours <= 2.0) return "Fast";
+            if (hours <= 3.5) return "Standard";
+            return "Slow / Delayed";
+        }
+
+        function getEtaLabel(hours) {
+            const now = new Date();
+            const eta = new Date(now.getTime() + hours * 60 * 60 * 1000);
+            return `Estimated arrival around ${eta.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+        }
+
+        async function predict() {
+            const originalText = predictBtn.innerText;
+            predictBtn.innerText = "Running model...";
+            predictBtn.style.opacity = "0.8";
+            errorMsg.innerText = "";
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ features: collectFeatures() })
+                });
+                const data = await response.json();
+                if (!response.ok || data.error) throw new Error(data.error || "Prediction failed");
+
+                const hours = Number(data.predicted_delivery_time);
+                const widthPct = Math.max(5, Math.min(100, (hours / 6) * 100));
+                resultTime.innerText = `${hours.toFixed(2)} hrs`;
+                resultBand.innerText = `Service band: ${getSpeedBand(hours)}`;
+                resultEta.innerText = getEtaLabel(hours);
+                meterFill.style.width = `${widthPct}%`;
+            } catch (error) {
+                errorMsg.innerText = `Error: ${error.message}`;
+            } finally {
+                predictBtn.innerText = originalText;
+                predictBtn.style.opacity = "1";
+            }
+        }
+
+        clearBtn.addEventListener("click", () => {
+            fields.forEach((field) => { field.value = ""; });
+            setActivePreset(-1);
+            resultTime.innerText = "-- hrs";
+            resultBand.innerText = "Waiting for prediction";
+            resultEta.innerText = "Use manual values and run prediction";
+            meterFill.style.width = "0";
+            errorMsg.innerText = "";
+        });
+
+        predictBtn.addEventListener("click", predict);
+
+        function setSelectOptions(selectEl, values, fallback) {
+            selectEl.innerHTML = "";
+            values.forEach((value) => {
+                const option = document.createElement("option");
+                option.value = value;
+                option.innerText = value;
+                selectEl.appendChild(option);
+            });
+            selectEl.value = fallback && values.includes(fallback) ? fallback : values[0] || "";
+        }
+
+        async function loadOptimizerOptions() {
+            try {
+                const response = await fetch("http://127.0.0.1:5000/optimizer-options");
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || "Failed loading optimizer options");
+                setSelectOptions(optWarehouse, data.warehouses || ["Warehouse A"], "Warehouse A");
+                setSelectOptions(optWindow, data.delivery_windows || ["08:00 - 12:00"], "08:00 - 12:00");
+                setSelectOptions(optDay, data.days || ["Monday"], "Monday");
+                setSelectOptions(optWeather, data.weathers || ["Clear"], "Clear");
+                const defaultFuel = Number(data.fuel_cost_default || 120);
+                optFuelCost.value = defaultFuel;
+                fuelCostLabel.innerText = String(defaultFuel);
+            } catch (error) {
+                optError.innerText = `Error: ${error.message}`;
+            }
+        }
+
+        function renderRouteTable(tableEl, legs, totals) {
+            const header = `
+                <tr>
+                    <th>Leg</th><th>From</th><th>To</th><th>Distance</th><th>Time</th>
+                </tr>
+            `;
+            const rows = legs.map((leg) => `
+                <tr>
+                    <td>${leg.leg}</td>
+                    <td>${leg.from}</td>
+                    <td>${leg.to}</td>
+                    <td>${Number(leg.distance).toFixed(2)} km</td>
+                    <td>${Number(leg.predicted_time).toFixed(2)} hrs</td>
+                </tr>
+            `).join("");
+            const footer = `
+                <tr>
+                    <td colspan="5"><strong>Total: ${Number(totals.total_distance).toFixed(2)} km, ${Number(totals.total_time).toFixed(2)} hrs, INR ${Number(totals.fuel_cost_inr).toFixed(2)}</strong></td>
+                </tr>
+            `;
+            tableEl.innerHTML = header + rows + footer;
+        }
+
+        function mapPositions(nodes) {
+            const out = {};
+            if (!nodes.length) return out;
+            out[nodes[0]] = { x: 110, y: 180 };
+            const customers = nodes.slice(1);
+            const cx = 460;
+            const cy = 180;
+            const r = 130;
+            customers.forEach((n, i) => {
+                const angle = (Math.PI * 2 * i) / customers.length;
+                out[n] = { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+            });
+            return out;
+        }
+
+        function drawRouteMap(warehouse, currentRoute, optimizedRoute) {
+            const nodes = [warehouse, ...new Set([...currentRoute.map((l) => l.to), ...optimizedRoute.map((l) => l.to)])];
+            const pos = mapPositions(nodes);
+            const ns = "http://www.w3.org/2000/svg";
+            routeMap.innerHTML = "";
+
+            function drawLines(legs, color, width, dash) {
+                legs.forEach((leg) => {
+                    const from = pos[leg.from];
+                    const to = pos[leg.to];
+                    if (!from || !to) return;
+                    const line = document.createElementNS(ns, "line");
+                    line.setAttribute("x1", String(from.x));
+                    line.setAttribute("y1", String(from.y));
+                    line.setAttribute("x2", String(to.x));
+                    line.setAttribute("y2", String(to.y));
+                    line.setAttribute("stroke", color);
+                    line.setAttribute("stroke-width", String(width));
+                    if (dash) line.setAttribute("stroke-dasharray", dash);
+                    routeMap.appendChild(line);
+                });
             }
 
-            fetch("http://127.0.0.1:5000/predict", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ features: features })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    btn.innerText = "Predict Delivery Time";
-                    btn.style.opacity = "1";
-                    resultDiv.style.opacity = "1";
+            drawLines(currentRoute, "#64748b", 2, "5 4");
+            drawLines(optimizedRoute, "#0b6a87", 3, "");
 
-                    if(data.error) {
-                        resultDiv.style.color = "#ef4444";
-                        resultDiv.innerText = "Error: " + data.error;
-                    } else {
-                        resultDiv.style.color = "#10b981";
-                        resultDiv.innerText = "⏱️ Est. Time: " + data.predicted_delivery_time + " hrs";
-                    }
-                })
-                .catch(error => {
-                    btn.innerText = "Predict Delivery Time";
-                    btn.style.opacity = "1";
-                    resultDiv.style.opacity = "1";
-                    resultDiv.style.color = "#ef4444";
-                    resultDiv.innerText = "Error connecting to server";
-                });
+            nodes.forEach((node, i) => {
+                const circle = document.createElementNS(ns, "circle");
+                circle.setAttribute("cx", String(pos[node].x));
+                circle.setAttribute("cy", String(pos[node].y));
+                circle.setAttribute("r", i === 0 ? "16" : "12");
+                circle.setAttribute("fill", i === 0 ? "#9a3412" : "#1d4ed8");
+                routeMap.appendChild(circle);
+
+                const text = document.createElementNS(ns, "text");
+                text.setAttribute("x", String(pos[node].x));
+                text.setAttribute("y", String(pos[node].y + 30));
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("font-size", "12");
+                text.setAttribute("font-family", "Manrope, sans-serif");
+                text.setAttribute("fill", "#1f2937");
+                text.textContent = node;
+                routeMap.appendChild(text);
+            });
         }
+
+        async function optimizeRoute() {
+            const payload = {
+                warehouse: optWarehouse.value,
+                delivery_window: optWindow.value,
+                day: optDay.value,
+                weather: optWeather.value,
+                fuel_cost_per_liter: Number(optFuelCost.value)
+            };
+
+            const originalText = optimizeBtn.innerText;
+            optimizeBtn.innerText = "Optimizing...";
+            optimizeBtn.style.opacity = "0.8";
+            optError.innerText = "";
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/optimize", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (!response.ok || data.error) throw new Error(data.error || "Optimization failed");
+
+                renderRouteTable(currentTable, data.current_route, data.metrics.current);
+                renderRouteTable(optimizedTable, data.optimized_route, data.metrics.optimized);
+                drawRouteMap(data.warehouse, data.current_route, data.optimized_route);
+
+                const imp = data.metrics.improvement;
+                document.getElementById("mDistance").innerText = `${Number(imp.distance_saved_km).toFixed(2)} km (${Number(imp.distance_saved_pct).toFixed(2)}%)`;
+                document.getElementById("mTime").innerText = `${Number(imp.time_saved_hrs).toFixed(2)} hrs (${Number(imp.time_saved_pct).toFixed(2)}%)`;
+                document.getElementById("mFuel").innerText = `INR ${Number(imp.fuel_saved_inr).toFixed(2)} (${Number(imp.fuel_saved_pct).toFixed(2)}%)`;
+            } catch (error) {
+                optError.innerText = `Error: ${error.message}`;
+            } finally {
+                optimizeBtn.innerText = originalText;
+                optimizeBtn.style.opacity = "1";
+            }
+        }
+
+        optFuelCost.addEventListener("input", () => {
+            fuelCostLabel.innerText = optFuelCost.value;
+        });
+        optimizeBtn.addEventListener("click", optimizeRoute);
+
+        buildPresets();
+        applyPreset(0);
+        loadOptimizerOptions();
     </script>
 </body>
 </html>
